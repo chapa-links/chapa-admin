@@ -2,7 +2,7 @@
 
 # Update These Variables
 BASE_HREF = '/'
-GITHUB_REPO = git@github.com:Capfields-evolve-app/capfields-web.git
+GITHUB_REPO = git@github.com/Sire-eben/chapa-admin.git
 BUILD_VERSION := $(shell grep 'version:' pubspec.yaml | awk '{print $$2}')
 CUSTOM_DOMAIN = app.capfieldsevolve.com 
 
