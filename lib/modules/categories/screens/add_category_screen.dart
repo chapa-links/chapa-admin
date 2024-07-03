@@ -1,8 +1,7 @@
-import 'dart:io';
-
 import 'package:chapa_admin/handlers/snackbar.dart';
 import 'package:chapa_admin/modules/categories/service/category_service.dart';
-import 'package:chapa_admin/utils/app_themes.dart';
+import 'package:chapa_admin/utils/__utils.dart';
+import 'package:chapa_admin/widgets/input_fields/amount_text_field.dart';
 import 'package:chapa_admin/widgets/input_fields/text_field.dart';
 import 'package:chapa_admin/widgets/page_loader.dart';
 import 'package:chapa_admin/widgets/primary_btn.dart';
@@ -22,21 +21,23 @@ class AddCategoryScreen extends StatefulWidget {
 class _AddCategoryScreenState extends State<AddCategoryScreen> {
   final _formKey = GlobalKey<FormState>();
   final _categoryNameController = TextEditingController();
+  final _categoryPriceController = TextEditingController();
   bool _isLoading = false;
 
   String selectedFile = '';
 
   Uint8List? image;
-  File? imageXFile;
 
   void _selectFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['png', 'jpeg'],
+    );
 
     if (result != null) {
       setState(() {
         selectedFile = result.files.first.name;
         image = result.files.first.bytes;
-        imageXFile = File(result.files.first.path!);
       });
       setState(() {});
     }
@@ -53,13 +54,21 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
         String imageUrl =
             await categoryService.uploadImage(image!, selectedFile);
         await categoryService.addCategory(
-            _categoryNameController.text, imageUrl);
+            name: _categoryNameController.text,
+            designPrice:
+                _categoryPriceController.text.removeTheCommas.toString(),
+            imageUrl: imageUrl);
 
         setState(() => _isLoading = false);
         Future.delayed(Duration.zero, () {
+          setState(() {
+            _categoryNameController.clear();
+            _categoryPriceController.clear();
+            image = null;
+          });
           SnackbarHandler.showSuccessSnackbar(
               context: context, message: 'Category added successfully!');
-          Navigator.pop(context);
+          // Navigator.pop(context);
         });
       } catch (e) {
         setState(() {
@@ -116,6 +125,20 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter a category name';
+                            }
+                            return null;
+                          },
+                        ),
+                        20.height,
+                        AmountTextField(
+                          controller: _categoryPriceController,
+                          labelText: 'Category Design Price',
+                          hintText: 'Enter Design Price',
+                          keyboardType: const TextInputType.numberWithOptions(
+                              decimal: false),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter a price';
                             }
                             return null;
                           },

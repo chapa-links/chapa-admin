@@ -92,13 +92,17 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text("Image", style: AppStyles.urbanist16Md),
-                            30.width,
+                            50.width,
                             Expanded(
                                 child: Text("Category Name",
                                     style: AppStyles.urbanist16Md)),
                             30.width,
                             Expanded(
                                 child: Text("Date Added",
+                                    style: AppStyles.urbanist16Md)),
+                            30.width,
+                            Expanded(
+                                child: Text("SubCategories",
                                     style: AppStyles.urbanist16Md)),
                           ],
                         ),

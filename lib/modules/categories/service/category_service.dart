@@ -1,77 +1,158 @@
 import 'dart:typed_data';
+import 'package:chapa_admin/handlers/base_change_notifier.dart';
+import 'package:chapa_admin/modules/categories/models/color_model.dart';
+import 'package:chapa_admin/modules/categories/models/size_model.dart';
 import 'package:chapa_admin/utils/app_collections.dart';
 import 'package:chapa_admin/utils/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-class CategoryService {
+class CategoryService extends BaseChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  // String _imageUrl = "";
-  // String get imageUrl => _imageUrl;
-  // Future<String> uploadFile({required File imageXFile}) async {
-  //   try {
-  //     String cloudinary = "https://api.cloudinary.com/v1_1/dhayhxgpw/upload";
-  //     // setLoading = true;
-  //     final url = Uri.parse(cloudinary);
-
-  //     final request = http.MultipartRequest('POST', url)
-  //       ..fields['upload_preset'] = "ea2mci0p"
-  //       ..files.add(await http.MultipartFile.fromPath('file', imageXFile.path));
-  //     final res = await request.send();
-  //     if (res.statusCode == 200) {
-  //       final resData = await res.stream.toBytes();
-  //       final resString = String.fromCharCodes(resData);
-  //       final jsonMap = jsonDecode(resString);
-  //       _imageUrl = jsonMap["url"];
-  //       // notifyListeners();
-
-  //       return _imageUrl;
-  //     } else {
-  //       // handleError(message: "failed");
-  //       return "";
-  //     }
-  //   } catch (e, s) {
-  //     // handleError(message: e.toString());
-  //     print(e);
-  //     print(s);
-  //     return "";
-  //   }
-  // }
-
   Future<String> uploadImage(Uint8List imageFile, String fileNames) async {
     try {
-      // String fileName = 'categories/$fileNames';
+      // Validate the image
+      // if (!isValidImage(imageFile)) {
+      //   throw Exception('Invalid image data');
+      // }
+      setLoading = true;
+
+      final now = Utils.getTimestamp();
+      // Upload the image
       Reference storageReference = _storage
           .ref()
           .child("Uploads")
           .child("Categories")
-          .child('/$fileNames');
+          .child('/$fileNames$now');
       final metaData = SettableMetadata(
         contentType: 'image/jpeg',
       );
       UploadTask uploadTask = storageReference.putData(imageFile, metaData);
-      await uploadTask.whenComplete(() => null);
-      String imageUrl = await storageReference.getDownloadURL();
-      return imageUrl;
+      TaskSnapshot snapshot = await uploadTask;
+
+      // Get the download URL
+      if (snapshot.state == TaskState.success) {
+        String imageUrl = await snapshot.ref.getDownloadURL();
+        print("Image uploaded successfully: $imageUrl");
+        setLoading = false;
+        return imageUrl;
+      } else {
+        setLoading = false;
+        throw Exception('Upload failed');
+      }
     } catch (e) {
+      print('Failed to upload image: $e');
+      setLoading = false;
       throw Exception('Failed to upload image: $e');
     }
   }
 
-  Future<void> addCategory(String name, String imageUrl) async {
+  bool isValidImage(Uint8List data) {
+    if (data.length < 10) return false;
+    if (data[0] == 0xFF && data[1] == 0xD8) {
+      return true;
+    }
+    return false;
+  }
+
+  Future<void> addCategory(
+      {required String name,
+      required String designPrice,
+      required String imageUrl}) async {
     try {
       final docId = Utils.generateRandomDocIDs();
       final now = Utils.getTimestamp();
       await _firestore.collection(AppCollections.categories).doc(docId).set({
         'id': docId,
         'name': name,
-        'imageUrl': imageUrl,
+        'url': imageUrl,
+        'design_price': designPrice,
         'added': now,
       });
     } catch (e) {
       throw Exception('Failed to add category: $e');
+    }
+  }
+
+  Future<bool> addSubcategory({
+    required String catId,
+    required String name,
+    required String designPrice,
+    required String lowPrice,
+    required String highPrice,
+    required String description,
+    required String specifications,
+    required List<String> images,
+    required List<String> colors,
+    required List<String> sizes,
+  }) async {
+    try {
+      setLoading = true;
+      final docId = Utils.generateRandomDocIDs();
+      final now = Utils.getTimestamp();
+      await _firestore
+          .collection(AppCollections.categories)
+          .doc(catId)
+          .collection(AppCollections.subcategories)
+          .doc(docId)
+          .set({
+        'id': docId,
+        'cat_id': catId,
+        'name': name,
+        'description': description,
+        'design_price': designPrice,
+        'higher_price': highPrice,
+        'lower_price': lowPrice,
+        'specifications': specifications,
+        'images': images,
+        'color': colors,
+        'size': sizes,
+        'added': now,
+      });
+      handleSuccess();
+      return true;
+    } catch (e) {
+      handleError(message: e.toString());
+      // throw Exception('Failed to add category: $e');
+      return false;
+    }
+  }
+
+  List<ColorModel> _colors = [];
+  List<ColorModel> get colors => _colors;
+
+  Future<List<ColorModel>> getColors() async {
+    try {
+      QuerySnapshot querySnapshot =
+          await _firestore.collection(AppCollections.colors).get();
+      List<ColorModel> colors = querySnapshot.docs.map((doc) {
+        return ColorModel.fromDocumentSnapshot(doc);
+      }).toList();
+      _colors = colors;
+      notifyListeners();
+      return colors;
+    } catch (e) {
+      throw Exception('Failed to get colors: $e');
+    }
+  }
+
+  List<SizeModel> _sizes = [];
+  List<SizeModel> get sizes => _sizes;
+
+  Future<List<SizeModel>> getSizes() async {
+    try {
+      QuerySnapshot querySnapshot =
+          await _firestore.collection(AppCollections.sizes).get();
+      List<SizeModel> sizes = querySnapshot.docs.map((doc) {
+        return SizeModel.fromDocumentSnapshot(doc);
+      }).toList();
+      _sizes = sizes;
+      notifyListeners();
+      return sizes;
+    } catch (e) {
+      throw Exception('Failed to get colors: $e');
     }
   }
 }
