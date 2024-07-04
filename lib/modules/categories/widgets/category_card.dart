@@ -1,16 +1,22 @@
+import 'package:chapa_admin/generated/assets.gen.dart';
+import 'package:chapa_admin/handlers/alert_dialog_handler.dart';
 import 'package:chapa_admin/locator.dart';
 import 'package:chapa_admin/modules/categories/models/categories.dart';
 import 'package:chapa_admin/modules/categories/screens/sub_categories.dart';
+import 'package:chapa_admin/modules/categories/service/category_service.dart';
 import 'package:chapa_admin/navigation_service.dart';
 import 'package:chapa_admin/utils/__utils.dart';
 import 'package:chapa_admin/widgets/cached_image_widget.dart';
+import 'package:chapa_admin/widgets/image.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class CategoryCard extends StatelessWidget {
-  const CategoryCard({super.key, required this.data});
+  const CategoryCard(
+      {super.key, required this.data, required this.categoryService});
   final CategoriesModel data;
+  final CategoryService categoryService;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +50,28 @@ class CategoryCard extends StatelessWidget {
               Expanded(child: Text(data.name, style: AppStyles.urbanist14Md)),
               30.width,
               Expanded(child: Text(Utils().formatDate(data.added))),
+              20.width,
+              Expanded(
+                  child: Row(
+                children: [
+                  LocalSvgIcon(Assets.icons.linear.eye),
+                  10.width,
+                  LocalSvgIcon(Assets.icons.linear.edit),
+                  10.width,
+                  InkWell(
+                      onTap: () {
+                        AlertDialogHandler.showDeleteDialog(
+                          context: context,
+                          isLoading: categoryService.isLoading,
+                          onpressed: () async {
+                            await categoryService.deleteCategory(id: data.id);
+                            locator<NavigationService>().goBack();
+                          },
+                        );
+                      },
+                      child: LocalSvgIcon(Assets.icons.linear.trash)),
+                ],
+              ))
             ],
           ),
         ),

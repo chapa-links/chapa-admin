@@ -7,6 +7,18 @@ class AuthService extends BaseChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Stream<User?> get authStateChanges => _auth.authStateChanges();
+  bool _logOut = false;
+  bool get logOut => _logOut;
+
+  changeLogoutStatus(bool value) {
+    if (value == false) {
+      _logOut = true;
+      notifyListeners();
+    } else {
+      _logOut = false;
+      notifyListeners();
+    }
+  }
 
   Future<bool> signInWithEmail(String email, String password) async {
     try {
@@ -20,8 +32,17 @@ class AuthService extends BaseChangeNotifier {
     }
   }
 
-  Future<void> signOut() async {
-    await _auth.signOut();
+  Future<bool> signOut() async {
+    try {
+      setLoading = true;
+      await _auth.signOut();
+      changeLogoutStatus(false);
+      handleSuccess();
+      return true;
+    } catch (e) {
+      handleError(message: e.toString());
+      return false;
+    }
   }
 
   Future<bool> checkAdmin() async {

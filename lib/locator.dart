@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import 'handlers/base_change_notifier.dart';
 import 'modules/authentication/services/auth_service.dart';
 import 'modules/categories/service/category_service.dart';
+import 'modules/utilities/service/utils_service.dart';
 import 'navigation_service.dart';
 
 // final chapaNavigatorKey = GlobalKey<NavigatorState>();
@@ -29,4 +29,5 @@ Future<void> setupLocator() async {
   locator.registerLazySingleton<BaseChangeNotifier>(() => BaseChangeNotifier());
   locator.registerLazySingleton<AuthService>(() => AuthService());
   locator.registerLazySingleton<CategoryService>(() => CategoryService());
+  locator.registerLazySingleton<UtilitiesService>(() => UtilitiesService());
 }

@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 import 'package:chapa_admin/handlers/base_change_notifier.dart';
-import 'package:chapa_admin/modules/categories/models/color_model.dart';
-import 'package:chapa_admin/modules/categories/models/size_model.dart';
+import 'package:chapa_admin/modules/utilities/models/color_model.dart';
+import 'package:chapa_admin/modules/utilities/models/size_model.dart';
 import 'package:chapa_admin/utils/app_collections.dart';
 import 'package:chapa_admin/utils/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,6 +10,36 @@ import 'package:firebase_storage/firebase_storage.dart';
 class CategoryService extends BaseChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
+
+  Future<void> deleteCategory({required String id}) async {
+    try {
+      setLoading = true;
+      await _firestore.collection(AppCollections.categories).doc(id).delete();
+      handleSuccess(message: "Deleted");
+    } catch (e) {
+      handleError(message: e.toString());
+      throw Exception('Failed to add category: $e');
+    }
+  }
+
+  Future<void> deleteSubcategory({
+    required String id,
+    required String catId,
+  }) async {
+    try {
+      setLoading = true;
+      await _firestore
+          .collection(AppCollections.categories)
+          .doc(catId)
+          .collection(AppCollections.subcategories)
+          .doc(id)
+          .delete();
+      handleSuccess(message: "Deleted");
+    } catch (e) {
+      handleError(message: e.toString());
+      throw Exception('Failed to add category: $e');
+    }
+  }
 
   Future<String> uploadImage(Uint8List imageFile, String fileNames) async {
     try {
@@ -62,16 +92,19 @@ class CategoryService extends BaseChangeNotifier {
       required String designPrice,
       required String imageUrl}) async {
     try {
-      final docId = Utils.generateRandomDocIDs();
+      setLoading = true;
+      // final docId = Utils.generateRandomDocIDs();
       final now = Utils.getTimestamp();
-      await _firestore.collection(AppCollections.categories).doc(docId).set({
-        'id': docId,
+      await _firestore.collection(AppCollections.categories).doc().set({
+        // 'id': docId,
         'name': name,
         'url': imageUrl,
         'design_price': designPrice,
         'added': now,
       });
+      handleSuccess();
     } catch (e) {
+      handleError(message: e.toString());
       throw Exception('Failed to add category: $e');
     }
   }
@@ -90,15 +123,15 @@ class CategoryService extends BaseChangeNotifier {
   }) async {
     try {
       setLoading = true;
-      final docId = Utils.generateRandomDocIDs();
+      // final docId = Utils.generateRandomDocIDs();
       final now = Utils.getTimestamp();
       await _firestore
           .collection(AppCollections.categories)
           .doc(catId)
           .collection(AppCollections.subcategories)
-          .doc(docId)
+          .doc()
           .set({
-        'id': docId,
+        // 'id': docId,
         'cat_id': catId,
         'name': name,
         'description': description,
@@ -110,6 +143,7 @@ class CategoryService extends BaseChangeNotifier {
         'color': colors,
         'size': sizes,
         'added': now,
+        'reviews': [],
       });
       handleSuccess();
       return true;

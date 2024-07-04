@@ -1,5 +1,4 @@
-import 'package:chapa_admin/modules/centered_view/centered_view.dart';
-import 'package:chapa_admin/modules/home_screen.dart';
+import 'package:chapa_admin/modules/layout_template/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
@@ -21,7 +20,7 @@ class _LayoutTemplateState extends State<LayoutTemplate> {
       return Scaffold(
           backgroundColor: Colors.white,
           key: scaffoldKey,
-          body: HomeScreen(child: widget.child));
+          body: Center(child: HomeScreen(child: widget.child)));
       // body: CenteredView(child: widget.child));
     });
   }

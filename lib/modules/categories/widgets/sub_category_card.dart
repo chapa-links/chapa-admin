@@ -1,7 +1,10 @@
 import 'package:chapa_admin/generated/assets.gen.dart';
 import 'package:chapa_admin/handlers/alert_dialog_handler.dart';
+import 'package:chapa_admin/locator.dart';
 import 'package:chapa_admin/modules/categories/models/sub_categories.dart';
 import 'package:chapa_admin/modules/categories/screens/view_sub_category_screen.dart';
+import 'package:chapa_admin/modules/categories/service/category_service.dart';
+import 'package:chapa_admin/navigation_service.dart';
 import 'package:chapa_admin/utils/__utils.dart';
 import 'package:chapa_admin/widgets/cached_image_widget.dart';
 import 'package:chapa_admin/widgets/image.dart';
@@ -10,9 +13,14 @@ import 'package:gap/gap.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class SubCategoryCard extends StatelessWidget {
-  const SubCategoryCard({super.key, required this.data, required this.index});
+  const SubCategoryCard(
+      {super.key,
+      required this.data,
+      required this.index,
+      required this.categoryService});
   final SubCategoriesModel data;
   final int index;
+  final CategoryService categoryService;
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +35,10 @@ class SubCategoryCard extends StatelessWidget {
       child: InkWell(
         onTap: () {
           AlertDialogHandler.showAlertDialog(
-              context, ViewSubCategoryScreen(subCategoriesModel: data), false,
-              heading: "Add sub category");
+              context: context,
+              child: ViewSubCategoryScreen(subCategoriesModel: data),
+              isLoading: false,
+              heading: data.name);
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -67,11 +77,34 @@ class SubCategoryCard extends StatelessWidget {
             Expanded(
                 child: Row(
               children: [
-                LocalSvgIcon(Assets.icons.linear.eye),
+                InkWell(
+                    onTap: () {
+                      AlertDialogHandler.showAlertDialog(
+                          context: context,
+                          child:
+                              ViewSubCategoryScreen(subCategoriesModel: data),
+                          isLoading: false,
+                          heading: data.name);
+                    },
+                    child: LocalSvgIcon(Assets.icons.linear.eye)),
                 10.width,
                 LocalSvgIcon(Assets.icons.linear.edit),
                 10.width,
-                LocalSvgIcon(Assets.icons.linear.trash),
+                InkWell(
+                    onTap: () {
+                      AlertDialogHandler.showDeleteDialog(
+                          context: context,
+                          isLoading: categoryService.isLoading,
+                          onpressed: () async {
+                            await categoryService
+                                .deleteSubcategory(
+                                    id: data.id, catId: data.cat_id)
+                                .whenComplete(
+                                  () => locator<NavigationService>().goBack(),
+                                );
+                          });
+                    },
+                    child: LocalSvgIcon(Assets.icons.linear.trash)),
               ],
             ))
           ],

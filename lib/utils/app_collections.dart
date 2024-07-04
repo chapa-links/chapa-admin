@@ -1,7 +1,7 @@
 class AppCollections {
   AppCollections._();
 
-  static const users = "USERS";
+  static const users = "Users";
   static const admins = "ADMINS";
   static const categories = "CATEGORIES";
   static const subcategories = "SUB-CATEGORIES";

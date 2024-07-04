@@ -49,17 +49,27 @@ class _SubCategoriesScreenState extends State<SubCategoriesScreen> {
         appBar: AppBar(
           title: Text('Sub Categories for ${widget.categoriesModel.name}'),
         ),
-        floatingActionButton: FloatingActionButton.extended(
-          icon: const Icon(Icons.add),
+        floatingActionButton: TextButton.icon(
+          style: TextButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            surfaceTintColor: AppColors.primary,
+          ),
+          icon: const Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
           onPressed: () {
             AlertDialogHandler.showAlertDialog(
-                context,
-                AddSubCategoryScreen(categoriesModel: widget.categoriesModel),
-                categoryService.isLoading,
+                context: context,
+                child: AddSubCategoryScreen(
+                    categoriesModel: widget.categoriesModel),
+                isLoading: categoryService.isLoading,
                 heading: "Add sub category");
           },
-          label: const Text("Add New Sub Category"),
-          elevation: 0,
+          label: Text(
+            "Add New Sub Category",
+            style: AppStyles.urbanist14Smbd.copyWith(color: Colors.white),
+          ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
         body: Center(
@@ -151,12 +161,13 @@ class _SubCategoriesScreenState extends State<SubCategoriesScreen> {
                           physics: const NeverScrollableScrollPhysics(),
                           padding: EdgeInsets.zero,
                           itemBuilder: (_, index) {
-                            final data =
-                                documents[index].data() as Map<String, dynamic>;
-                            final category = SubCategoriesModel.fromJson(data);
+                            final data = documents[index];
+                            final category =
+                                SubCategoriesModel.fromDocumentSnapshot(data);
                             return SubCategoryCard(
                               data: category,
                               index: index,
+                              categoryService: categoryService,
                             );
                           },
                         ),

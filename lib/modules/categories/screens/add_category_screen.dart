@@ -87,96 +87,98 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final categoryService = Provider.of<CategoryService>(context);
+    // final categoryService = Provider.of<CategoryService>(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Add Category'),
-      ),
-      body: Center(
-        child: _isLoading
-            ? const PageLoader()
-            : IntrinsicHeight(
-                child: Container(
-                  constraints: BoxConstraints(
-                    maxWidth: MediaQuery.of(context).size.width * .4,
-                    // maxHeight: MediaQuery.of(context).size.width * .3,
-                  ),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      boxShadow: Shadows.universal,
-                      borderRadius: BorderRadius.circular(30)),
-                  padding: const EdgeInsets.all(22.0),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Create Category",
-                          style: AppStyles.urbanist24Xbd,
-                        ),
-                        30.height,
-                        CustomTextField(
-                          controller: _categoryNameController,
-                          labelText: 'Category Name',
-                          hintText: 'Enter Category Name',
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter a category name';
-                            }
-                            return null;
-                          },
-                        ),
-                        20.height,
-                        AmountTextField(
-                          controller: _categoryPriceController,
-                          labelText: 'Category Design Price',
-                          hintText: 'Enter Design Price',
-                          keyboardType: const TextInputType.numberWithOptions(
-                              decimal: false),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter a price';
-                            }
-                            return null;
-                          },
-                        ),
-                        20.height,
-                        if (image != null)
-                          SizedBox(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Image.memory(
-                                  image!,
-                                  height: 200,
-                                  fit: BoxFit.cover,
-                                ),
-                                Text(selectedFile)
-                              ],
-                            ),
+    return Consumer<CategoryService>(builder: (context, categoryService, __) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Add Category'),
+        ),
+        body: Center(
+          child: categoryService.isLoading
+              ? const PageLoader()
+              : IntrinsicHeight(
+                  child: Container(
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width * .4,
+                      // maxHeight: MediaQuery.of(context).size.width * .3,
+                    ),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: Shadows.universal,
+                        borderRadius: BorderRadius.circular(30)),
+                    padding: const EdgeInsets.all(22.0),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Create Category",
+                            style: AppStyles.urbanist24Xbd,
                           ),
-                        const SizedBox(height: 20),
-                        ElevatedButton(
-                          onPressed: () => _selectFile(),
-                          child: const Text('Select Icon'),
-                        ),
-                        const SizedBox(height: 20),
-                        _isLoading
-                            ? const Center(child: CircularProgressIndicator())
-                            : PrimaryButton(
-                                onPressed: () =>
-                                    _addCategory(context, categoryService),
-                                label: 'Add Category',
+                          30.height,
+                          CustomTextField(
+                            controller: _categoryNameController,
+                            labelText: 'Category Name',
+                            hintText: 'Enter Category Name',
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter a category name';
+                              }
+                              return null;
+                            },
+                          ),
+                          20.height,
+                          AmountTextField(
+                            controller: _categoryPriceController,
+                            labelText: 'Category Design Price',
+                            hintText: 'Enter Design Price',
+                            keyboardType: const TextInputType.numberWithOptions(
+                                decimal: false),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter a price';
+                              }
+                              return null;
+                            },
+                          ),
+                          20.height,
+                          if (image != null)
+                            SizedBox(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Image.memory(
+                                    image!,
+                                    height: 200,
+                                    fit: BoxFit.cover,
+                                  ),
+                                  Text(selectedFile)
+                                ],
                               ),
-                      ],
+                            ),
+                          const SizedBox(height: 20),
+                          ElevatedButton(
+                            onPressed: () => _selectFile(),
+                            child: const Text('Select Icon'),
+                          ),
+                          const SizedBox(height: 20),
+                          _isLoading
+                              ? const Center(child: CircularProgressIndicator())
+                              : PrimaryButton(
+                                  onPressed: () =>
+                                      _addCategory(context, categoryService),
+                                  label: 'Add Category',
+                                ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-      ),
-    );
+        ),
+      );
+    });
   }
 }

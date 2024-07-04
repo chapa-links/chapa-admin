@@ -1,11 +1,11 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'package:chapa_admin/utils/parser_util.dart';
-import 'package:equatable/equatable.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'review_model.dart';
 
-class SubCategoriesModel extends Equatable {
+class SubCategoriesModel {
   final String id;
   final String name;
   final String cat_id;
@@ -20,26 +20,10 @@ class SubCategoriesModel extends Equatable {
   final String design_price;
   final List<ReviewModel> reviews;
 
-  const SubCategoriesModel({
-    this.id = "",
-    this.name = "",
-    this.cat_id = "",
-    this.color = const [],
-    this.images = const [],
-    this.size = const [],
-    this.specifications = "",
-    this.description = "",
-    this.added = "",
-    this.higher_price = "",
-    this.lower_price = "",
-    this.design_price = "",
-    this.reviews = const [],
-  });
-
-  factory SubCategoriesModel.fromJson(Map<String, dynamic> json) {
-    final data = Map<String, dynamic>.from(json);
+  factory SubCategoriesModel.fromDocumentSnapshot(DocumentSnapshot json) {
+    // final data = Map<String, dynamic>.from(json);
     return SubCategoriesModel(
-      id: json['id'] ?? "",
+      id: json.id,
       name: json['name'] ?? "",
       description: json['description'] ?? "",
       cat_id: json['cat_id'] ?? "",
@@ -66,25 +50,24 @@ class SubCategoriesModel extends Equatable {
       reviews: json['reviews'] == null
           ? []
           : ParserUtil<ReviewModel>().parseJsonList(
-              json: data['reviews'],
+              json: json['reviews'],
               fromJson: (e) => ReviewModel.fromJson(e),
             ),
     );
   }
-  @override
-  List<Object?> get props => [
-        id,
-        name,
-        cat_id,
-        description,
-        images,
-        color,
-        size,
-        specifications,
-        added,
-        reviews,
-        higher_price,
-        lower_price,
-        design_price,
-      ];
+
+  SubCategoriesModel(
+      {required this.id,
+      required this.name,
+      required this.cat_id,
+      required this.color,
+      required this.images,
+      required this.size,
+      required this.specifications,
+      required this.description,
+      required this.added,
+      required this.higher_price,
+      required this.lower_price,
+      required this.design_price,
+      required this.reviews});
 }

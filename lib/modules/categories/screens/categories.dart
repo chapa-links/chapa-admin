@@ -1,6 +1,8 @@
 import 'package:chapa_admin/generated/assets.gen.dart';
+import 'package:chapa_admin/locator.dart';
 import 'package:chapa_admin/modules/categories/models/categories.dart';
 import 'package:chapa_admin/modules/categories/screens/add_category_screen.dart';
+import 'package:chapa_admin/modules/categories/service/category_service.dart';
 import 'package:chapa_admin/modules/categories/widgets/category_card.dart';
 import 'package:chapa_admin/utils/__utils.dart';
 import 'package:chapa_admin/utils/app_collections.dart';
@@ -38,14 +40,23 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      floatingActionButton: FloatingActionButton.extended(
-        icon: const Icon(Icons.add),
+      floatingActionButton: TextButton.icon(
+        style: TextButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          surfaceTintColor: AppColors.primary,
+        ),
+        icon: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
         onPressed: () {
           Navigator.push(
               context, MaterialPageRoute(builder: (_) => AddCategoryScreen()));
         },
-        label: const Text("Add New Category"),
-        elevation: 0,
+        label: Text(
+          "Add New Category",
+          style: AppStyles.urbanist14Smbd.copyWith(color: Colors.white),
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       body: Center(
@@ -101,6 +112,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                             Expanded(
                                 child: Text("Date Added",
                                     style: AppStyles.urbanist16Md)),
+                            20.width,
+                            Expanded(
+                                child: Text("Actions",
+                                    style: AppStyles.urbanist16Md)),
                           ],
                         ),
                       ),
@@ -111,11 +126,12 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                         physics: const NeverScrollableScrollPhysics(),
                         padding: EdgeInsets.zero,
                         itemBuilder: (_, index) {
-                          final data =
-                              documents[index].data() as Map<String, dynamic>;
-                          final category = CategoriesModel.fromJson(data);
+                          final data = documents[index];
+                          final category =
+                              CategoriesModel.fromDocumentSnapshot(data);
                           return CategoryCard(
                             data: category,
+                            categoryService: locator<CategoryService>(),
                           );
                         },
                       ),
