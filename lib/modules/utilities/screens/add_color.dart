@@ -56,6 +56,7 @@ class _AddColorDialogState extends State<AddColorDialog> {
                         20.height,
                         PrimaryButton(
                           onPressed: () async {
+                            if (!_formKey.currentState!.validate()) return;
                             await utilitiesService
                                 .addColor(name: _nameController.text.trim())
                                 .then((res) {

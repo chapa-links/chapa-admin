@@ -30,7 +30,6 @@ class _AddSubCategoryScreenState extends State<AddSubCategoryScreen> {
   final _highPriceController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _specController = TextEditingController();
-  bool _isLoading = false;
   final service = locator<CategoryService>();
 
   List<Uint8List> images = [];
@@ -51,9 +50,7 @@ class _AddSubCategoryScreenState extends State<AddSubCategoryScreen> {
   Future<void> _addCategory(
       BuildContext context, CategoryService categoryService) async {
     if (_formKey.currentState!.validate() && images.isNotEmpty) {
-      setState(() {
-        _isLoading = true;
-      });
+      setState(() {});
 
       try {
         List<String> imageUrls = [];
@@ -76,16 +73,13 @@ class _AddSubCategoryScreenState extends State<AddSubCategoryScreen> {
           images: imageUrls,
         );
 
-        setState(() => _isLoading = false);
         Future.delayed(Duration.zero, () {
           SnackbarHandler.showSuccessSnackbar(
               context: context, message: 'Subcategory added successfully!');
           locator<NavigationService>().goBack();
         });
       } catch (e) {
-        setState(() {
-          _isLoading = false;
-        });
+        setState(() {});
         Future.delayed(Duration.zero, () {
           SnackbarHandler.showErrorSnackbar(
               context: context, message: 'Failed to add subcategory: $e');
@@ -166,7 +160,7 @@ class _AddSubCategoryScreenState extends State<AddSubCategoryScreen> {
                                   controller: _lowPriceController,
                                   labelText: 'Low quality price',
                                   hintText: 'Enter Price',
-                                  prefixText: AppStrings.naira,
+                                  prefixText: AppStrings.naira + "  ",
                                   keyboardType:
                                       const TextInputType.numberWithOptions(
                                           decimal: false),
@@ -182,7 +176,7 @@ class _AddSubCategoryScreenState extends State<AddSubCategoryScreen> {
                                   controller: _highPriceController,
                                   labelText: 'High quality price',
                                   hintText: 'Enter Price',
-                                  prefixText: AppStrings.naira,
+                                  prefixText: AppStrings.naira + "  ",
                                   keyboardType:
                                       const TextInputType.numberWithOptions(
                                           decimal: false),

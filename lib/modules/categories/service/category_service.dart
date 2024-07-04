@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:chapa_admin/handlers/base_change_notifier.dart';
+import 'package:chapa_admin/modules/printing_services/models/prints.dart';
 import 'package:chapa_admin/modules/utilities/models/color_model.dart';
 import 'package:chapa_admin/modules/utilities/models/size_model.dart';
 import 'package:chapa_admin/utils/app_collections.dart';
@@ -10,6 +11,37 @@ import 'package:firebase_storage/firebase_storage.dart';
 class CategoryService extends BaseChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
+
+  List<PrintingServicesModel> getPrintServices(List<String> ids) {
+    try {
+      print("====== ${ids}");
+      List<PrintingServicesModel> res =
+          _prints.where((cat) => ids.contains(cat.id)).toList();
+      print("====== ${res}");
+      return res;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  List<PrintingServicesModel> _prints = [];
+  List<PrintingServicesModel> get printingServices => _prints;
+
+  Future<List<PrintingServicesModel>> getPrintingServices() async {
+    try {
+      QuerySnapshot querySnapshot =
+          await _firestore.collection(AppCollections.printingServices).get();
+      List<PrintingServicesModel> printingServices =
+          querySnapshot.docs.map((doc) {
+        return PrintingServicesModel.fromDocumentSnapshot(doc);
+      }).toList();
+      _prints = printingServices;
+      notifyListeners();
+      return printingServices;
+    } catch (e) {
+      throw Exception('Failed to get colors: $e');
+    }
+  }
 
   Future<void> deleteCategory({required String id}) async {
     try {
@@ -87,19 +119,33 @@ class CategoryService extends BaseChangeNotifier {
     return false;
   }
 
+  List<Map<String, dynamic>> convertPrintToMap(
+      List<PrintingServicesModel> printServices) {
+    return printServices.map((order) {
+      return {
+        "id": order.id,
+        "name": order.name,
+        "price": order.price,
+        "unit": order.unit,
+        "added": order.added,
+      };
+    }).toList();
+  }
+
   Future<void> addCategory(
       {required String name,
       required String designPrice,
+      required List<String> printServices,
       required String imageUrl}) async {
     try {
       setLoading = true;
-      // final docId = Utils.generateRandomDocIDs();
+      // final services = convertPrintToMap(printServices);
       final now = Utils.getTimestamp();
       await _firestore.collection(AppCollections.categories).doc().set({
-        // 'id': docId,
         'name': name,
         'url': imageUrl,
         'design_price': designPrice,
+        'printing_services': printServices,
         'added': now,
       });
       handleSuccess();

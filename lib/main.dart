@@ -11,6 +11,7 @@ import 'modules/authentication/screens/login_screen.dart';
 import 'modules/authentication/services/auth_service.dart';
 import 'modules/categories/service/category_service.dart';
 import 'modules/layout_template/layout_template.dart';
+import 'modules/printing_services/service/print_service.dart';
 import 'modules/utilities/service/utils_service.dart';
 import 'navigation_service.dart';
 import 'routing/router.dart';
@@ -47,6 +48,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider<AuthService>(create: (_) => locator()),
         ChangeNotifierProvider<CategoryService>(create: (_) => locator()),
         ChangeNotifierProvider<UtilitiesService>(create: (_) => locator()),
+        ChangeNotifierProvider<PrintingService>(create: (_) => locator()),
       ],
       child: MaterialApp(
         title: AppStrings.appName,

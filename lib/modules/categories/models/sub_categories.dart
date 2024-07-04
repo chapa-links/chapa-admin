@@ -51,7 +51,7 @@ class SubCategoriesModel {
           ? []
           : ParserUtil<ReviewModel>().parseJsonList(
               json: json['reviews'],
-              fromJson: (e) => ReviewModel.fromJson(e),
+              fromJson: (e) => ReviewModel.fromDocumentSnapshot(e),
             ),
     );
   }
@@ -71,3 +71,10 @@ class SubCategoriesModel {
       required this.design_price,
       required this.reviews});
 }
+
+
+// List<IsusuModel>.from(
+//             json['data'].map(
+//               (e) => IsusuModel.fromJson(e),
+//             ),
+//           );

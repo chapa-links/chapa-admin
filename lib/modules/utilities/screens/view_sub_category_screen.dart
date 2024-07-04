@@ -73,7 +73,7 @@ class _ViewSubCategoryScreenState extends State<ViewSubCategoryScreen> {
                                 enabled: false,
                                 labelText: 'Low quality price',
                                 hintText: Utils.formatAmount(data.lower_price),
-                                prefixText: AppStrings.naira,
+                                prefixText: AppStrings.naira + "  ",
                                 keyboardType:
                                     const TextInputType.numberWithOptions(
                                         decimal: false),
@@ -89,7 +89,7 @@ class _ViewSubCategoryScreenState extends State<ViewSubCategoryScreen> {
                                 enabled: false,
                                 labelText: 'High quality price',
                                 hintText: Utils.formatAmount(data.higher_price),
-                                prefixText: AppStrings.naira,
+                                prefixText: AppStrings.naira + "  ",
                                 keyboardType:
                                     const TextInputType.numberWithOptions(
                                         decimal: false),

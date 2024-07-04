@@ -20,6 +20,7 @@ class CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("========== ${data.printing_services}");
     return IntrinsicWidth(
       child: Container(
         width: context.getWidth(.4),
@@ -48,6 +49,26 @@ class CategoryCard extends StatelessWidget {
               ),
               Gap(context.getWidth(.1)),
               Expanded(child: Text(data.name, style: AppStyles.urbanist14Md)),
+              30.width,
+              Expanded(
+                  child: Text(Utils.formatAmount(data.design_price),
+                      style: AppStyles.urbanist14Md)),
+              30.width,
+              Expanded(
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      padding: EdgeInsets.zero,
+                      itemCount: categoryService
+                          .getPrintServices(data.printing_services)
+                          .length,
+                      itemBuilder: (_, index) {
+                        final service = categoryService
+                            .getPrintServices(data.printing_services)[index];
+                        return Text(
+                            "${service.name} - ${Utils.formatAmount(service.price)}",
+                            style: AppStyles.urbanist14Md);
+                      })),
               30.width,
               Expanded(child: Text(Utils().formatDate(data.added))),
               20.width,

@@ -4,6 +4,7 @@ import 'package:chapa_admin/modules/authentication/screens/login_screen.dart';
 import 'package:chapa_admin/modules/categories/screens/add_category_screen.dart';
 import 'package:chapa_admin/modules/categories/screens/categories.dart';
 import 'package:chapa_admin/modules/dashboard/screens/dashboard.dart';
+import 'package:chapa_admin/modules/printing_services/screens/printing_services.dart';
 import 'package:chapa_admin/modules/users/screens/users.dart';
 import 'package:chapa_admin/modules/utilities/screens/utilities.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case addCategories:
       return _getPageRoute(const AddCategoryScreen(), settings);
     case printingServices:
-      return _getPageRoute(const UtilitiesScreen(), settings);
+      return _getPageRoute(const PrintingServices(), settings);
     case colorssRoute:
       return _getPageRoute(const UtilitiesScreen(), settings);
     case sizesRoute:

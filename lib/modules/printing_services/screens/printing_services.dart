@@ -1,10 +1,9 @@
 import 'package:chapa_admin/generated/assets.gen.dart';
 import 'package:chapa_admin/handlers/alert_dialog_handler.dart';
 import 'package:chapa_admin/locator.dart';
-import 'package:chapa_admin/modules/categories/models/categories.dart';
-import 'package:chapa_admin/modules/categories/screens/add_category_screen.dart';
-import 'package:chapa_admin/modules/categories/service/category_service.dart';
-import 'package:chapa_admin/modules/categories/widgets/category_card.dart';
+import 'package:chapa_admin/modules/printing_services/models/prints.dart';
+import 'package:chapa_admin/modules/printing_services/service/print_service.dart';
+import 'package:chapa_admin/modules/printing_services/widgets/print_card.dart';
 import 'package:chapa_admin/utils/__utils.dart';
 import 'package:chapa_admin/utils/app_collections.dart';
 import 'package:chapa_admin/widgets/image.dart';
@@ -15,14 +14,16 @@ import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nb_utils/nb_utils.dart';
 
-class CategoriesScreen extends StatefulWidget {
-  const CategoriesScreen({super.key});
+import 'add_service.dart';
+
+class PrintingServices extends StatefulWidget {
+  const PrintingServices({super.key});
 
   @override
-  State<CategoriesScreen> createState() => _CategoriesScreenState();
+  State<PrintingServices> createState() => _PrintingServicesState();
 }
 
-class _CategoriesScreenState extends State<CategoriesScreen> {
+class _PrintingServicesState extends State<PrintingServices> {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
   final searchController = TextEditingController();
@@ -30,21 +31,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   Stream<QuerySnapshot> get _database {
     CollectionReference storesRef =
-        _firebaseFirestore.collection(AppCollections.categories);
+        _firebaseFirestore.collection(AppCollections.printingServices);
 
     Query query = storesRef;
 
     return query.snapshots();
-  }
-
-  final service = locator<CategoryService>();
-  fetchDetails() async => await service.getPrintingServices();
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    Future.microtask(() => fetchDetails());
   }
 
   @override
@@ -63,13 +54,13 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         onPressed: () {
           AlertDialogHandler.showAlertDialog(
             context: context,
-            child: const AddCategoryScreen(),
+            child: const AddPrintingServiceDialog(),
             isLoading: false,
-            heading: "Create Category",
+            heading: "Add service",
           );
         },
         label: Text(
-          "Add New Category",
+          "Add Service",
           style: AppStyles.urbanist14Smbd.copyWith(color: Colors.white),
         ),
       ),
@@ -79,7 +70,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             30.height,
-            Text('All Categories',
+            Text('Printing Services',
                 style: GoogleFonts.urbanist(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -107,11 +98,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                         children: [
                           Gap(context.getHeight(.3)),
                           LocalSvgIcon(
-                            Assets.icons.bulk.category2,
+                            Assets.icons.bulk.printer,
                             size: 100,
                             color: AppColors.primary,
                           ),
-                          const Text("No categories to show"),
+                          const Text("No services to show"),
                           Gap(context.getHeight(.3)),
                         ],
                       ),
@@ -128,21 +119,18 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text("Image", style: AppStyles.urbanist16Md),
-                              Gap(context.getWidth(.1)),
                               Expanded(
-                                  child: Text("Category Name",
+                                  child: Text("S/N",
                                       style: AppStyles.urbanist16Md)),
-                              30.width,
+                              20.width,
                               Expanded(
-                                  child: Text(
-                                      "Design Price(${AppStrings.naira})",
+                                  child: Text("Name",
                                       style: AppStyles.urbanist16Md)),
-                              30.width,
+                              20.width,
                               Expanded(
-                                  child: Text("Printing Services",
+                                  child: Text("Price(${AppStrings.naira})",
                                       style: AppStyles.urbanist16Md)),
-                              30.width,
+                              20.width,
                               Expanded(
                                   child: Text("Date Added",
                                       style: AppStyles.urbanist16Md)),
@@ -161,11 +149,13 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                           padding: EdgeInsets.zero,
                           itemBuilder: (_, index) {
                             final data = documents[index];
-                            final category =
-                                CategoriesModel.fromDocumentSnapshot(data);
-                            return CategoryCard(
-                              data: category,
-                              categoryService: locator<CategoryService>(),
+                            final color =
+                                PrintingServicesModel.fromDocumentSnapshot(
+                                    data);
+                            return PrintCard(
+                              data: color,
+                              index: index,
+                              printingService: locator<PrintingService>(),
                             );
                           },
                         ),

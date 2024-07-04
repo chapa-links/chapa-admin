@@ -56,6 +56,7 @@ class _AddSizeDialogState extends State<AddSizeDialog> {
                         20.height,
                         PrimaryButton(
                           onPressed: () async {
+                            if (!_formKey.currentState!.validate()) return;
                             await utilitiesService
                                 .addSize(name: _nameController.text.trim())
                                 .then((res) {
