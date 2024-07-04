@@ -84,7 +84,7 @@ class AppTheme {
         ),
         appBarTheme: AppBarTheme(
           titleTextStyle:
-              AppStyles.urbanist18Smbd.copyWith(color: Colors.white),
+              AppStyles.urbanist18Smbd.copyWith(color: Colors.black),
           iconTheme: IconThemeData(color: AppColors.primary),
           backgroundColor: AppColors.white,
           foregroundColor: AppColors.white,

@@ -1,6 +1,5 @@
 import 'package:chapa_admin/locator.dart';
 import 'package:chapa_admin/modules/dashboard/screens/dashboard.dart';
-import 'package:chapa_admin/modules/home_screen.dart';
 import 'package:chapa_admin/routing/route_names.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -18,7 +17,7 @@ import 'utils/app_strings.dart';
 import 'utils/app_themes.dart';
 import 'package:url_strategy/url_strategy.dart';
 
-// final navigatorKey = GlobalKey<NavigatorState>();
+// final chapaNavigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,7 +38,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -53,7 +51,7 @@ class _MyAppState extends State<MyApp> {
         theme: AppTheme.defaultTheme(context),
         debugShowCheckedModeBanner: false,
         builder: (context, child) => LayoutTemplate(child: child!),
-        navigatorKey: locator<NavigationService>().navigatorKey,
+        navigatorKey: locator<NavigationService>().chapaNavigatorKey,
         onGenerateRoute: generateRoute,
         initialRoute: authWrapper,
         // home: const AuthWrapper(),

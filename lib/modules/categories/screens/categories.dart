@@ -8,6 +8,7 @@ import 'package:chapa_admin/widgets/image.dart';
 import 'package:chapa_admin/widgets/page_loader.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nb_utils/nb_utils.dart';
 
@@ -87,22 +88,18 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                     children: [
                       ConstrainedBox(
                         constraints:
-                            BoxConstraints(maxWidth: context.getWidth(.6)),
+                            BoxConstraints(minWidth: context.getWidth(.4)),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text("Image", style: AppStyles.urbanist16Md),
-                            50.width,
+                            Gap(context.getWidth(.1)),
                             Expanded(
                                 child: Text("Category Name",
                                     style: AppStyles.urbanist16Md)),
                             30.width,
                             Expanded(
                                 child: Text("Date Added",
-                                    style: AppStyles.urbanist16Md)),
-                            30.width,
-                            Expanded(
-                                child: Text("SubCategories",
                                     style: AppStyles.urbanist16Md)),
                           ],
                         ),

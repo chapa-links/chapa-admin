@@ -52,7 +52,10 @@ class _HomeScreenState extends State<HomeScreen> {
         appBar: AppBar(
           title: Text(
             'Admin Dashboard',
-            style: AppStyles.urbanist24Smbd.copyWith(color: Colors.black),
+            style: AppStyles.urbanist20Md.copyWith(
+              color: Colors.black,
+              fontWeight: FontWeight.w900,
+            ),
           ),
           actions: [
             IconButton(

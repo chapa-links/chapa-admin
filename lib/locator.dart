@@ -7,7 +7,7 @@ import 'modules/authentication/services/auth_service.dart';
 import 'modules/categories/service/category_service.dart';
 import 'navigation_service.dart';
 
-final navigatorKey = GlobalKey<NavigatorState>();
+// final chapaNavigatorKey = GlobalKey<NavigatorState>();
 
 final locator = GetIt.instance;
 Future<void> setupLocator() async {

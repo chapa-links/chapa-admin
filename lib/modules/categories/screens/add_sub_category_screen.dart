@@ -2,6 +2,7 @@ import 'package:chapa_admin/handlers/snackbar.dart';
 import 'package:chapa_admin/locator.dart';
 import 'package:chapa_admin/modules/categories/models/categories.dart';
 import 'package:chapa_admin/modules/categories/service/category_service.dart';
+import 'package:chapa_admin/navigation_service.dart';
 import 'package:chapa_admin/utils/__utils.dart';
 import 'package:chapa_admin/utils/app_themes.dart';
 import 'package:chapa_admin/widgets/input_fields/amount_text_field.dart';
@@ -79,7 +80,7 @@ class _AddSubCategoryScreenState extends State<AddSubCategoryScreen> {
         Future.delayed(Duration.zero, () {
           SnackbarHandler.showSuccessSnackbar(
               context: context, message: 'Subcategory added successfully!');
-          Navigator.pop(context);
+          locator<NavigationService>().goBack();
         });
       } catch (e) {
         setState(() {

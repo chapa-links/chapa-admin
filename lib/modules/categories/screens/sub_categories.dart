@@ -3,7 +3,6 @@ import 'package:chapa_admin/handlers/alert_dialog_handler.dart';
 import 'package:chapa_admin/modules/categories/models/categories.dart';
 import 'package:chapa_admin/modules/categories/models/sub_categories.dart';
 import 'package:chapa_admin/modules/categories/service/category_service.dart';
-import 'package:chapa_admin/modules/categories/widgets/category_card.dart';
 import 'package:chapa_admin/modules/categories/widgets/sub_category_card.dart';
 import 'package:chapa_admin/utils/__utils.dart';
 import 'package:chapa_admin/utils/app_collections.dart';
@@ -58,11 +57,6 @@ class _SubCategoriesScreenState extends State<SubCategoriesScreen> {
                 AddSubCategoryScreen(categoriesModel: widget.categoriesModel),
                 categoryService.isLoading,
                 heading: "Add sub category");
-            // Navigator.push(
-            //     context,
-            //     MaterialPageRoute(
-            //         builder: (_) => AddSubCategoryScreen(
-            //             categoriesModel: widget.categoriesModel)));
           },
           label: const Text("Add New Sub Category"),
           elevation: 0,
@@ -142,6 +136,10 @@ class _SubCategoriesScreenState extends State<SubCategoriesScreen> {
                               20.width,
                               Expanded(
                                   child: Text("Date Added",
+                                      style: AppStyles.urbanist16Md)),
+                              20.width,
+                              Expanded(
+                                  child: Text("Actions",
                                       style: AppStyles.urbanist16Md)),
                             ],
                           ),
